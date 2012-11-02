@@ -5,10 +5,10 @@
 CC =		gcc -Wall -O2 -I.
 BISON =		bison -d
 FLEX =		flex
-INSTALL =	install
+INSTALL =	ginstall
 RM =		rm -f
 
-All:		fbset
+all:		fbset
 
 
 fbset:		fbset.o modes.tab.o lex.yy.o
@@ -24,18 +24,12 @@ modes.tab.c:	modes.y
 		$(BISON) modes.y
 
 install:	fbset
-		if [ -f /sbin/fbset ]; then rm /sbin/fbset; fi
-		$(INSTALL) fbset /usr/sbin
-		$(INSTALL) fbset.8 /usr/man/man8
-		$(INSTALL) fb.modes.5 /usr/man/man5
-		if [ ! -c /dev/fb0 ]; then mknod /dev/fb0 c 29 0; fi
-		if [ ! -c /dev/fb1 ]; then mknod /dev/fb1 c 29 32; fi
-		if [ ! -c /dev/fb2 ]; then mknod /dev/fb2 c 29 64; fi
-		if [ ! -c /dev/fb3 ]; then mknod /dev/fb3 c 29 96; fi
-		if [ ! -c /dev/fb4 ]; then mknod /dev/fb4 c 29 128; fi
-		if [ ! -c /dev/fb5 ]; then mknod /dev/fb5 c 29 160; fi
-		if [ ! -c /dev/fb6 ]; then mknod /dev/fb6 c 29 192; fi
-		if [ ! -c /dev/fb7 ]; then mknod /dev/fb7 c 29 224; fi
+		$(INSTALL) -D fbset $(DESTDIR)/usr/sbin/fbset
+		$(INSTALL) -D fbset.8 $(DESTDIR)/usr/man/man8/fbset.8
+		$(INSTALL) -D fb.modes.5 $(DESTDIR)/usr/man/man5/fb.modes.5
+		for modefile in fb.modes.ATI  fb.modes.Falcon  fb.modes.NTSC  fb.modes.PAL;do\
+		  $(INSTALL) -D etc/$$modefile $(DESTDIR)/etc/fb.modes.d/$$modefile;\
+		done
 
 clean:
 		$(RM) *.o fbset lex.yy.c modes.tab.c modes.tab.h
