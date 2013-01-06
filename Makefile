@@ -22,6 +22,7 @@ lex.yy.c:	modes.l
 
 modes.tab.c:	modes.y
 		$(BISON) modes.y
+modes.tab.h:	modes.tab.c
 
 install:	fbset
 		$(INSTALL) -D fbset $(DESTDIR)/usr/sbin/fbset
